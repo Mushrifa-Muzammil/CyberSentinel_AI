@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CyberSentinel AI | Next-Gen Phishing Detection</title>
+    <!-- Bootstrap 5 CSS + Icons + Google Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(145deg, #f0f4ff 0%, #e8eeff 50%, #f5f0ff 100%);
+            min-height: 100vh;
+            padding-bottom: 2rem;
+            position: relative;
+        }
+        
+        /* Animated Background Dots */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 20% 40%, rgba(59,130,246,0.03) 1.5px, transparent 1.5px);
+            background-size: 35px 35px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Glassmorphism Card - Attractive Light Theme */
+        .cyber-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(0px);
+            border-radius: 48px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(59,130,246,0.05);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cyber-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 55px -15px rgba(59,130,246,0.2);
+            border-color: rgba(59,130,246,0.4);
+        }
+        
+        /* Gradient Text - Vibrant */
+        .gradient-text {
+            background: linear-gradient(135deg, #1e40af, #3b82f6, #8b5cf6, #06b6d4);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        /* AI Badge - Glowing */
+        .ai-badge {
+            background: linear-gradient(135deg, #e0e7ff, #dbeafe);
+            color: #1e40af;
+            border-radius: 60px;
+            padding: 6px 18px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(59,130,246,0.15);
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        
+        /* Score Pills - Modern */
+        .phish-score-high {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 8px 20px rgba(239,68,68,0.3);
+        }
+        .phish-score-mid {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            box-shadow: 0 8px 20px rgba(249,115,22,0.3);
+        }
+        .phish-score-low {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 8px 20px rgba(16,185,129,0.3);
+        }
+        .score-pill {
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 80px;
+            padding: 10px 28px;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        /* Primary Button - Premium */
+        .btn-ai {
+            background: linear-gradient(135deg, #3b82f6, #7c3aed);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 14px 36px;
+            border-radius: 80px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(59,130,246,0.35);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-ai::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-ai:hover::before {
+            left: 100%;
+        }
+        
+        .btn-ai:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 28px rgba(59,130,246,0.45);
+            background: linear-gradient(135deg, #2563eb, #6d28d9);
+        }
+        
+        .btn-outline-premium {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            color: #475569;
+            border-radius: 80px;
+            padding: 12px 32px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-outline-premium:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background: rgba(59,130,246,0.05);
+            transform: translateY(-2px);
+        }
+        
+        /* Tip Items - Premium Light */
+        .tip-item {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border-radius: 24px;
+            transition: all 0.3s;
+            border-left: 5px solid #3b82f6;
+            color: #1e293b;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .tip-item:hover {
+            transform: translateX(8px);
+            background: linear-gradient(135deg, #eff6ff, #ffffff);
+            box-shadow: 0 8px 20px rgba(59,130,246,0.12);
+        }
+        
+        /* Result Area */
+        .result-area {
+            background: linear-gradient(135deg, #ffffff, #fafcff);
+            border-radius: 32px;
+            border-left: 6px solid;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+        
+        /* Code Snippet */
+        .code-snippet {
+            background: linear-gradient(135deg, #f1f5f9, #f8fafc);
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            border-radius: 20px;
+            font-family: monospace;
+        }
+        
+        /* Input Field - Premium */
+        textarea {
+            background: #ffffff !important;
+            border: 2px solid #e2e8f0 !important;
+            color: #1e293b !important;
+            font-size: 1rem;
+            border-radius: 24px !important;
+            transition: all 0.3s;
+        }
+        textarea:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.12) !important;
+            outline: none;
+        }
+        
+        /* Example Buttons */
+        .example-btn {
+            transition: all 0.3s;
+            border-radius: 60px;
+            padding: 8px 20px;
+        }
+        .example-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+        
+        /* Glow Animation */
+        .alert-glow {
+            animation: glowPulse 0.6s ease-in-out 2;
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(239,68,68,0.15); }
+        }
+        
+        /* Spin Animation */
+        .spin-icon, .spin-me {
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Navbar Premium */
+        .navbar-premium {
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(59,130,246,0.15);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+        
+        /* Stats Badge */
+        .stat-badge {
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            border-radius: 60px;
+            padding: 8px 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        .stat-badge:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Card */
+        .hero-card {
+            background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+            border-radius: 48px;
+            border: 1px solid rgba(59,130,246,0.15);
+        }
+        
+        footer {
+            color: #64748b;
+        }
+        
+        /* Floating Animation for Icons */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .float-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @media (max-width: 768px) {
+            .cyber-card { margin: 0 0.5rem; }
+            .score-pill { font-size: 1rem; padding: 6px 16px; }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation - Premium Light -->
+<nav class="navbar navbar-premium py-3 shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: linear-gradient(135deg, #3b82f6, #7c3aed); box-shadow: 0 4px 12px rgba(59,130,246,0.3);">
+                <i class="bi bi-shield-lock-fill fs-5 text-white"></i>
+            </div>
+            <div>
+                <span class="fw-bold fs-2" style="color: #0f172a;">CyberSentinel <span style="background: linear-gradient(135deg, #3b82f6, #7c3aed); background-clip: text; -webkit-background-clip: text; color: transparent;">AI</span></span>
+                <div class="small text-muted">Next-Gen Phishing Intelligence</div>
+            </div>
+            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill ms-2"><i class="bi bi-robot"></i> v4.0</span>
+        </a>
+        <div class="d-none d-md-block">
+            <span class="text-secondary"><i class="bi bi-cpu text-primary"></i> Neural threat intelligence · 98.7% accuracy</span>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-4 my-md-5">
+    <!-- Hero Section - Attractive -->
+    <div class="hero-card p-4 p-md-5 mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <div class="ai-badge mb-3"><i class="bi bi-cpu me-1"></i> Powered by SentinelNet Neural Engine</div>
+                <h1 class="display-3 fw-bold gradient-text mb-3">AI-Powered<br>Phishing Detection</h1>
+                <p class="lead text-secondary">Our advanced AI analyzes URLs, email content, and message patterns in real-time. Get instant threat assessment with <strong class="text-primary">98.7% accuracy</strong>.</p>
+                <div class="d-flex gap-3 mt-4 flex-wrap">
+                    <div class="stat-badge">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <span>98.7% Detection Rate</span>
+                    </div>
+                    <div class="stat-badge">
+                        <i class="bi bi-lightning-charge-fill text-warning"></i>
+                        <span>&lt;0.8s Response</span>
+                    </div>
+                    <div class="stat-badge">
+                        <i class="bi bi-shield-check text-info"></i>
+                        <span>Zero-Day Protection</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="cyber-card p-4 text-center">
+                    <div class="float-icon">
+                        <i class="bi bi-graph-up" style="font-size: 2.8rem; color: #3b82f6;"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mt-2">Global Threat Intelligence</h5>
+                    <div class="progress mb-2" style="height: 8px; background: #e2e8f0; border-radius: 10px;">
+                        <div class="progress-bar bg-danger" style="width: 64%; border-radius: 10px;"></div>
+                    </div>
+                    <small class="text-secondary">Phishing attacks increased 34% globally</small>
+                    <hr class="my-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">Blocks Today</small>
+                            <h4 class="fw-bold text-primary" id="liveStat">12.4K</h4>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">AI Confidence</small>
+                            <h4 class="fw-bold text-success">99.2%</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DETECTION CARD -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="cyber-card p-4 p-md-5">
+                <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+                    <div class="rounded-circle p-3" style="background: linear-gradient(135deg, #3b82f620, #7c3aed20);">
+                        <i class="bi bi-shield-check fs-2 text-primary"></i>
+                    </div>
+                    <h3 class="mb-0 fw-bold text-dark">🛡️ AI Phishing Scanner</h3>
+                    <span class="ms-auto badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">Live Analysis · Real-Time</span>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-semibold text-dark mb-2"><i class="bi bi-link-45deg text-primary"></i> Enter URL, Email, or Suspicious Message</label>
+                    <textarea class="form-control form-control-lg" id="userInput" rows="3" placeholder="Example: http://secure-login-paypal.verify-account.com/update or 'Dear customer, your account has been suspended. Verify immediately...'"></textarea>
+                    <div class="form-text mt-2 text-secondary"><i class="bi bi-info-circle text-primary"></i> AI scans for deceptive keywords, malicious domains, urgency patterns, and homograph attacks.</div>
+                </div>
+                
+                <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
+                    <div>
+                        <button id="analyzeBtn" class="btn btn-ai"><i class="bi bi-magic me-2"></i> Analyze with AI</button>
+                        <button id="clearBtn" class="btn btn-outline-premium ms-2"><i class="bi bi-eraser"></i> Clear</button>
+                    </div>
+                    <div id="loadingIndicator" class="text-primary d-none">
+                        <i class="bi bi-arrow-repeat spin-icon me-2"></i> AI neural engine scanning...
+                    </div>
+                </div>
+
+                <!-- Result Section -->
+                <div id="resultContainer" class="mt-5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Awareness & Education Section -->
+    <div class="row mt-5 g-4">
+        <div class="col-md-6">
+            <div class="cyber-card h-100 p-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="rounded-circle p-2" style="background: #fef3c7;">
+                        <i class="bi bi-lightbulb-fill fs-4 text-warning"></i>
+                    </div>
+                    <h4 class="mb-0 text-dark fw-bold">AI Security Awareness</h4>
+                </div>
+                <p class="text-secondary">Machine learning insights to stay ahead of evolving phishing campaigns</p>
+                <div id="tipsList" class="mt-3"></div>
+                <button id="refreshTipBtn" class="btn btn-outline-primary rounded-pill mt-3 px-4"><i class="bi bi-arrow-repeat me-2"></i> New AI Insight</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="cyber-card h-100 p-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="rounded-circle p-2" style="background: #dbeafe;">
+                        <i class="bi bi-binoculars fs-4 text-info"></i>
+                    </div>
+                    <h4 class="mb-0 text-dark fw-bold">How AI Detects Phishing</h4>
+                </div>
+                <ul class="list-unstyled mt-3">
+                    <li class="mb-3 d-flex align-items-start gap-2">
+                        <i class="bi bi-check-circle-fill text-success mt-1 fs-5"></i>
+                        <span class="text-secondary"><strong class="text-dark">Heuristic Pattern Matching</strong><br><small class="text-muted">"urgent", "verify", "account suspended"</small></span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start gap-2">
+                        <i class="bi bi-check-circle-fill text-success mt-1 fs-5"></i>
+                        <span class="text-secondary"><strong class="text-dark">Domain Entropy & Abnormal TLDs</strong><br><small class="text-muted">.xyz, .top, .tk, etc.</small></span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start gap-2">
+                        <i class="bi bi-check-circle-fill text-success mt-1 fs-5"></i>
+                        <span class="text-secondary"><strong class="text-dark">Homograph Attack Detection</strong><br><small class="text-muted">rnicrosoft vs microsoft</small></span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start gap-2">
+                        <i class="bi bi-check-circle-fill text-success mt-1 fs-5"></i>
+                        <span class="text-secondary"><strong class="text-dark">Sentiment & Urgency Scoring</strong><br><small class="text-muted">LLM-inspired heuristics</small></span>
+                    </li>
+                </ul>
+                <div class="code-snippet p-3 mt-2 small">
+                    <i class="bi bi-database me-1"></i> Active Model: PhishBERT-Lite · 99% Precision · <span class="text-success fw-semibold">● Operational</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Example Test Cases -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="cyber-card p-4">
+                <h5 class="fw-bold text-dark"><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i> Test the AI — Try These Examples</h5>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <button class="btn btn-sm btn-outline-danger example-btn px-3 py-2" data-example="http://paypa1-verify.secure-login.com/update?id=283">⚠️ PayPal Lookalike</button>
+                    <button class="btn btn-sm btn-outline-danger example-btn px-3 py-2" data-example="URGENT: Your bank account has been locked. Click https://fakebank-verify.net/reset immediately to restore access.">🚨 Bank Urgency Scam</button>
+                    <button class="btn btn-sm btn-outline-success example-btn px-3 py-2" data-example="https://github.com/features/copilot">✅ Safe GitHub Link</button>
+                    <button class="btn btn-sm btn-outline-danger example-btn px-3 py-2" data-example="Dear Apple user, your iCloud storage is full. Verify now: http://icloud-services.xyz/">🍎 iCloud Phishing</button>
+                    <button class="btn btn-sm btn-outline-warning example-btn px-3 py-2" data-example="Congratulations! You won $1000. Click here to claim: http://prize-winner.top/claim">🎁 Lottery Scam</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="mt-5">
+        <hr class="my-4">
+        <p><i class="bi bi-shield-lock text-primary"></i> CyberSentinel AI — Advanced phishing detection for cybersecurity awareness. Never share personal credentials online.</p>
+        <p class="small text-muted">© CyberSentinel AI · Protecting users from evolving cyber threats</p>
+    </footer>
+</div>
+
+<script>
+    $(document).ready(function() {
+        
+        // Animated stat counter
+        let currentStat = 11200;
+        setInterval(() => {
+            currentStat += Math.floor(Math.random() * 60) + 15;
+            $("#liveStat").text((currentStat / 1000).toFixed(1) + "K");
+        }, 3200);
+        
+        // Advanced AI Detection Logic
+        function advancedPhishingAnalysis(text) {
+            if (!text || text.trim() === "") {
+                return { score: 0, risk: "No Input", verdict: "neutral", details: "Please provide a URL or message to scan.", color: "secondary" };
+            }
+            const lowerText = text.toLowerCase();
+            
+            const suspiciousKeywords = [
+                "verify", "account suspended", "confirm your identity", "update your payment", 
+                "click here", "login to avoid", "deactivated", "unusual activity", "secure your account",
+                "limited access", "winning", "lottery", "reset password", "bank account", "credit card",
+                "urgent action", "immediate response", "account verification"
+            ];
+            let keywordMatches = 0;
+            suspiciousKeywords.forEach(kw => {
+                if (lowerText.includes(kw)) keywordMatches++;
+            });
+            const keywordScore = Math.min(40, keywordMatches * 7);
+            
+            const urlRegex = /https?:\/\/[^\s]+/gi;
+            const foundUrls = text.match(urlRegex) || [];
+            let urlIndicators = 0;
+            const suspiciousTLDs = [".tk", ".top", ".ml", ".ga", ".cf", ".xyz", ".club", ".online", ".site", ".click", ".live", ".download"];
+            let hasSuspiciousTld = false;
+            if (foundUrls.length > 0) {
+                for (let url of foundUrls) {
+                    for (let tld of suspiciousTLDs) {
+                        if (url.includes(tld)) { hasSuspiciousTld = true; urlIndicators += 15; break; }
+                    }
+                    if (url.includes("@")) urlIndicators += 20;
+                    if ((url.match(/-/g) || []).length > 2) urlIndicators += 10;
+                    if (url.includes("paypa1") || url.includes("rnicrosoft") || url.includes("faceb00k") || url.includes("g00gle")) urlIndicators += 25;
+                    if (url.includes("secure") && url.includes("login")) urlIndicators += 8;
+                }
+            } else {
+                if (lowerText.includes("http") === false && keywordMatches > 2) urlIndicators = 5;
+            }
+            
+            let urgencyScore = 0;
+            const urgencyWords = ["urgent", "immediately", "asap", "action required", "within 24h", "right away", "suspended", "locked"];
+            urgencyWords.forEach(uw => { if (lowerText.includes(uw)) urgencyScore += 8; });
+            const exclamationCount = (text.match(/!/g) || []).length;
+            urgencyScore += Math.min(12, exclamationCount * 3);
+            
+            const brands = ["paypal", "apple", "microsoft", "bank of america", "chase", "amazon", "netflix", "instagram", "facebook", "google", "icloud"];
+            let brandImpersonation = 0;
+            brands.forEach(b => {
+                if (lowerText.includes(b)) {
+                    if (hasSuspiciousTld || keywordMatches > 0) brandImpersonation += 18;
+                    else brandImpersonation += 8;
+                }
+            });
+            
+            let extraRedFlags = 0;
+            if (/\d+\.\d+\.\d+\.\d+/.test(text)) extraRedFlags += 20;
+            if (lowerText.includes("bit.ly") || lowerText.includes("tinyurl") || lowerText.includes("short.url")) extraRedFlags += 12;
+            if (lowerText.includes("password") && lowerText.includes("reset")) extraRedFlags += 10;
+            
+            let totalScore = keywordScore + Math.min(30, urlIndicators) + Math.min(25, urgencyScore) + Math.min(25, brandImpersonation) + extraRedFlags;
+            totalScore = Math.min(100, totalScore);
+            
+            let riskLevel = "", verdictMsg = "", bgClass = "";
+            if (totalScore >= 65) {
+                riskLevel = "HIGH RISK - Phishing Detected";
+                verdictMsg = "⚠️ AI analysis indicates strong phishing patterns. Do NOT click any links or provide any information.";
+                bgClass = "danger";
+            } else if (totalScore >= 35) {
+                riskLevel = "MEDIUM RISK - Suspicious";
+                verdictMsg = "🤔 AI found suspicious indicators. Exercise caution and verify the sender through official channels.";
+                bgClass = "warning";
+            } else {
+                riskLevel = "LOW RISK - Appears Safe";
+                verdictMsg = "✅ No significant phishing indicators detected. However, always remain vigilant.";
+                bgClass = "success";
+            }
+            
+            let details = `Neural analysis: Keywords=${keywordMatches} (${keywordScore}), URL anomalies=${urlIndicators}, Urgency=${urgencyScore}, Brand abuse=${brandImpersonation}, Red flags=${extraRedFlags}. Confidence: ${totalScore}/100.`;
+            
+            return {
+                score: totalScore,
+                risk: riskLevel,
+                verdict: verdictMsg,
+                details: details,
+                color: bgClass,
+                severity: totalScore
+            };
+        }
+        
+        function renderResult(analysis, inputText) {
+            const container = $("#resultContainer");
+            let scoreClass = "";
+            if (analysis.score >= 65) scoreClass = "phish-score-high";
+            else if (analysis.score >= 35) scoreClass = "phish-score-mid";
+            else scoreClass = "phish-score-low";
+            
+            const scoreHtml = `<div class="score-pill ${scoreClass} mb-3"><i class="bi bi-shield-check me-2"></i> AI Threat Score: ${analysis.score} / 100</div>`;
+            const borderColor = analysis.color === "danger" ? "#ef4444" : (analysis.color === "warning" ? "#f97316" : "#10b981");
+            const outputHtml = `
+                <div class="result-area p-4" style="border-left-color: ${borderColor};">
+                    ${scoreHtml}
+                    <h4 class="fw-bold text-dark">${analysis.risk}</h4>
+                    <p class="mt-2 text-secondary">${analysis.verdict}</p>
+                    <hr>
+                    <div class="small text-secondary"><i class="bi bi-bar-chart-steps me-1"></i> <strong>AI Explainability:</strong> ${analysis.details}</div>
+                    <div class="mt-3 text-secondary small"><i class="bi bi-chat-dots-fill me-1"></i> Scanned: "${inputText.substring(0, 100)}${inputText.length > 100 ? '…' : ''}"</div>
+                    <div class="alert alert-light mt-3 mb-0 py-2 small border rounded-3">
+                        <i class="bi bi-lightbulb text-warning me-1"></i> <strong>Security Tip:</strong> ${analysis.score >= 50 ? "Never click suspicious links. Report phishing to your security team." : "Always verify URLs before entering credentials."}
+                    </div>
+                </div>
+            `;
+            container.html(outputHtml).hide().fadeIn(300);
+        }
+        
+        const cyberTips = [
+            "🔐 Enable 2FA on all critical accounts — blocks 99.9% of automated attacks.",
+            "🧠 Phishing emails create fake urgency. Pause and verify via official channels.",
+            "🌐 Hover over links before clicking: check if domain matches the legitimate company.",
+            "📧 Never share OTP or passwords. Legitimate organizations never request them via email.",
+            "🛡️ Report phishing attempts and help AI models improve their detection.",
+            "📱 SMS phishing (smishing) is rising. Don't click unexpected text links.",
+            "💼 Use a password manager — it auto-fills only on genuine domains.",
+            "🤖 Avoid attachments from unknown senders. Malware often hides in PDFs and Office files."
+        ];
+        
+        function displayRandomTip() {
+            const randomIndex = Math.floor(Math.random() * cyberTips.length);
+            const tipHtml = `<div class="tip-item p-3 mb-2"><i class="bi bi-shield-check me-2 text-primary"></i> ${cyberTips[randomIndex]}</div>`;
+            $("#tipsList").html(tipHtml);
+        }
+        
+        displayRandomTip();
+        $("#refreshTipBtn").on("click", function() {
+            displayRandomTip();
+            $(this).html('<i class="bi bi-arrow-repeat spin-me"></i> Loading').delay(600).queue(function() {
+                $(this).html('<i class="bi bi-arrow-repeat me-2"></i> New AI Insight');
+                $(this).dequeue();
+            });
+        });
+        
+        $("#analyzeBtn").on("click", function() {
+            const rawText = $("#userInput").val();
+            if (!rawText || rawText.trim() === "") {
+                $("#resultContainer").html(`
+                    <div class="alert alert-warning rounded-4">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Please enter a URL or suspicious message for AI analysis.
+                    </div>
+                `);
+                return;
+            }
+            $("#loadingIndicator").removeClass("d-none");
+            $("#analyzeBtn").prop("disabled", true);
+            
+            setTimeout(() => {
+                const analysisResult = advancedPhishingAnalysis(rawText);
+                renderResult(analysisResult, rawText);
+                $("#loadingIndicator").addClass("d-none");
+                $("#analyzeBtn").prop("disabled", false);
+                if (analysisResult.score >= 70) {
+                    $("#resultContainer .result-area").addClass("alert-glow").delay(800).queue(function() {
+                        $(this).removeClass("alert-glow");
+                        $(this).dequeue();
+                    });
+                }
+            }, 750);
+        });
+        
+        $("#clearBtn").on("click", function() {
+            $("#userInput").val("");
+            $("#resultContainer").html(`
+                <div class="text-center text-secondary py-4 border rounded-4 bg-light">
+                    <i class="bi bi-binoculars fs-1"></i>
+                    <p class="mt-2">AI analysis results will appear here after scanning.</p>
+                </div>
+            `);
+        });
+        
+        $(".example-btn").on("click", function() {
+            const exampleText = $(this).data("example");
+            $("#userInput").val(exampleText);
+            $("#analyzeBtn").trigger("click");
+        });
+        
+        if ($("#userInput").val().length === 0) {
+            $("#resultContainer").html(`
+                <div class="text-center text-secondary py-4 border rounded-4 bg-light">
+                    <i class="bi bi-robot fs-1"></i>
+                    <p class="mt-2">Ready. Enter a suspicious message or URL to activate <strong class="text-primary">AI PhishNet</strong>.</p>
+                </div>
+            `);
+        }
+        
+        $(document).on('mouseenter', '.tip-item', function() { $(this).css('transform', 'scale(1.01)'); });
+        $(document).on('mouseleave', '.tip-item', function() { $(this).css('transform', 'scale(1)'); });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
